@@ -1,6 +1,7 @@
 body {
 	background: #fffdea; /* Цвет фона */
 	overflow: auto;
+	max-widht: 500px;
 
 }
 
