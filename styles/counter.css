@@ -1,0 +1,151 @@
+body {
+    background: #fffdea;
+}
+
+#header {
+    text-align: center; 
+    background: #d1ff95;
+    width: 60%;
+}
+
+.icon-bar {
+    width: 100%;
+    background-color: #d1ff95;
+    overflow: auto;
+    display: inline-block;
+
+}
+
+.icon-bar a {
+    float: left; 
+    text-align: center; 
+    width: 20%; 
+    padding: 12px 0; 
+    transition: all 0.3s ease; 
+    color: white; 
+    font-size: 36px;
+}
+
+.icon-bar a:hover {
+    background-color: #000; 
+}
+
+
+TABLE {
+    border: 0px;
+    border-bottom: 2px solid #7bad5a; /* Линия внизу таблицы */
+    background: #fffdea; /* Цвет фона таблицы */
+    width: 100%;
+    text-align: center; 
+   }
+
+TH {
+    background: rgb(67, 139, 70); /* Цвет фона заголовка */
+    color: white; /* Цвет текста */
+    text-align: center; /* Выравнивание по левому краю */
+   }
+
+TD, TH {
+    padding: 2px; /* Поля вокруг текста */
+   }
+
+tr:nth-child(even) {/* Стиль для четных строк */
+    background-color: #f2f2f2
+}
+
+.fc { 
+    text-align: left; 
+    color: #cad4ca; 
+    width: 3px;
+   }
+
+#rowTotal {
+    background: #daecda; 
+    padding: 4px; 
+    color: #fff; 
+}
+
+#addingPoints {
+    box-sizing: border-box;
+}
+
+.formFild {
+    display: flex;
+    margin: 0 0 1rem 0;
+}
+
+label, input {
+    width: 70%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    font-size: 1.1rem;
+}
+
+label {
+    margin-right: 10px;
+    width: 30%;
+}
+
+input {
+    border: 2px solid #aaa;
+    border-radius: 2px;
+}
+
+#popupAddResults {
+    position: absolute;
+    height: auto;
+    width: 50%;
+	border-radius: 5px;
+	border: 3px #000 solid;
+    background: #fffdea;
+    right: 25%; 
+	display: none; 
+	z-index: 5;
+    padding: 25px 10px;
+    overflow: auto;
+}
+
+#popup_close {
+    padding-right: 2%;
+    padding-bottom: 1%;
+    padding-left: 2%;
+    padding-top: 1%;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	cursor: pointer;
+    display: block;
+    background: #d1ff95;
+    color: #ffffff;
+}
+
+#popup_close:hover {
+    background-color: #000000;
+}
+
+#overlay {
+	z-index:3;
+	position:fixed; 
+	background-color:#000; 
+	opacity:0.8; 
+	-moz-opacity:0.8; /* фикс прозрачности для старых браузеров */
+	filter:alpha(opacity=80);
+	width:100%; 
+	height:100%; 
+	top:0; 
+	left:0;
+	cursor:pointer;
+	display:none; /* в oбычнoм сoстoянии её нет) */
+}
+
+
+#footer { /* Нижний блок */
+    background: #333; /* Цвет фона */
+    padding: 3px; /* Поля вокруг текста */
+    color: #fff; /* Цвет текста */
+   }
+
+#timer {
+    color: #727272; /* Цвет текста */
+    text-align: center;
+   }

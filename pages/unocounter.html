@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>UNOcounter</title>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Программа, позволяющая легко и удобно считать очки в игре UNO">
+        <meta name="keywords" content="UNO, counter, avto, count, game, считать, посчитывать, автоматически, очки, в, игре, игра">
+        <meta name="viewport"content="width=device-width"/>
+        <link rel="stylesheet" href="../styles/counter.css">
+        <link rel="stylesheet" href="../styles/styles.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script type="text/javascript" src="../js/counter.js"></script>
+        <script type="text/javascript" src="../js/main.js"></script>
+
+    </head>
+    <body onload="createTable()">
+        <div class="icon-bar">
+                <a href="../index.html"><i class="fa fa-home"></i></a>
+                <a href="#" id="header">UNO</a>
+                <a href="#" onclick="saveGameState"><i class="fa fa-save"></i></a> 
+        </div>
+
+    <div id="map">
+        <div name="Result">
+            <table id="TableResult" cellpadding="0">
+            </table>
+        </div>
+        <div name="Total">
+            <table id="rowTotal" cellpadding="0">
+            </table>
+        </div>
+        <button id ="addresult" class ="button" onclick="javascript:PopUpShow('popupAddResults')">Add</button>
+        
+        <div id="popupAddResults">
+            <form action="" id="add_results_form" method="post" onsubmit="addResults();return false;">
+                <span id="popup_close" onclick="javascript:PopUpHide('popupAddResults')">X</span>
+                <fieldset>
+                    <legend>Add points</legend>
+                    <div id="addingPoints">
+
+                    </div>
+                    <input type="button" id ="addToTable" class ="button" onclick="javascript:addResults()" value="Add"/>
+                </fieldset>
+            </form>
+        </div>
+        <div id="overlay"></div>
+    </div>
+
+        <div id="footer">
+            <p id="timer"></p>
+        </div>
+        
+    </body>
+</html>
