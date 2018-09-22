@@ -59,7 +59,7 @@ tr:nth-child(even) {/* Стиль для четных строк */
     width: 3px;
    }
 
-#rowTotal {
+#footerTableResult {
     background: #daecda; 
     padding: 4px; 
     color: #fff; 

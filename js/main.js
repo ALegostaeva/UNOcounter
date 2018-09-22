@@ -3,10 +3,10 @@
 
 //массивs для игры
 var arrUsers =  [];
-var points = [];
 var round = 0;
 var listGamers = document.getElementById('listGamers');
 var maxPoints = 0;
+var game = {};
 
 
 /*функция добавления пользователя в div listGamers.
@@ -16,7 +16,6 @@ var maxPoints = 0;
 Очищается поле ввода*/
 
 function addGamerToList (){
-  console.log('add gamer...');
   
   var gamer = document.getElementById('gamer');
   var name = gamer.value;
@@ -30,47 +29,53 @@ function addGamerToList (){
     } else {createGamer(name)};
   document.getElementById('gamer').value = '';
   };
-console.log(`end proccess adding gamer ${name}`);
+
 localStorage.setItem('tempNames', arrUsers);
 };
+
+
 
 /*функция добавления создания пользователя в формате: <li><b>name</b><span onclick:javascript:deleteGamer>delete</span></li>. 
 Вызывается из addGamerToList.
 Пользователь так же добавляется в массив arrUsers.
-Инициализируется функция удаления строки из списка пользвоателей*/
+Инициализируется функция удаления строки из списка пользователей*/
+
 function createGamer(name) {
-  var li=document.createElement('li');
-  var newGamer = document.createTextNode(name);
-  console.log(name);
+  let li=document.createElement('li');
+  let newGamer = document.createTextNode(name);
   arrUsers.push(name);
   li.setAttribute('id', name);
   li.appendChild(newGamer);
   document.getElementById("listGamers").appendChild(li);
-  console.log(arrUsers);
-  var span = document.createElement("SPAN");
-  var txt = document.createTextNode("\u00D7");
+  let span = document.createElement("SPAN");
+  let txt = document.createTextNode("\u00D7");
   span.className = "close";
   span.appendChild(txt);
   li.appendChild(span);
+
   if (arrUsers.length > 1) {
-    var b=document.getElementById('startNewGame');
+    let b=document.getElementById('startNewGame');
     b.style.display= 'inline-block';
   };
+
   //добавление действия "удалить" на кнопке "х" в списке имен игроков
   span.setAttribute('onclick', 'javascript:deleteGamer(\''+name+'\')');
 }
+
+
 
 /* Функция используется в окне создания новой игры.
 функция удаляет элемент li по id. ID=имени игрока. 
 Так же проверяется, если пользователи в массиве arrUsers. 
 Если нет - то кнопка "startNewGame" становится недоступной*/
+
 function deleteGamer(id) {
   console.log(`delete gamer ${id}`);
   let x = document.getElementById(id);
   console.log(x);
   x.style.display = 'none';
   x.remove();
-  var n = arrUsers.indexOf(id);
+  let n = arrUsers.indexOf(id);
   arrUsers.splice(n, 1);
   console.info(n);
   console.info(`array of users ${arrUsers}`);
@@ -80,37 +85,66 @@ function deleteGamer(id) {
     b.style.display= 'none';
     console.log('buttom startNewGame disabled...');
   }
-}
+};
+
 
 var createTable = function () {
-  var names = localStorage.getItem('tempNames').split(',');
-  console.log(`create table...${names}`);
 
+  console.log('createTable');
+  var names = localStorage.getItem('tempNames').split(',');
+
+  console.log(game);
+
+  //var zto = localStorage.getItem('game');
+  //zfrom = JSON.parse(zto);
+  //console.log(zfrom);
+
+  //создание шапки таблицы
+  createTableHead(names);
+
+  //если игра была загружена из сохраненных, то добавляем очки в таблицу
+  if (game.cols[0].data !== undefined) {
+    tablePoints();
+  };
+
+  /*создание ряда с итоговыми очками игроков*/
+  createTableFooter(names);
+
+};
+
+//функция создания шапки таблицы с именами игроков
+var createTableHead = function (names) {
   //создание шапки таблицы  
   let tr=document.createElement('tr');
+
   //создание первой ячейки первого столбца с символом номер
   let th=document.createElement('th');
   th.className='fc';
   let sn = document.createTextNode('№');
   let b=document.createElement('b');
   b.appendChild(sn); th.appendChild(b); tr.appendChild(th); //создание строки в ДОМ
-  console.log('№ created...');
 
+  //создание массива колонок игры
+  game.cols=[];
+
+  //создание первой строки таблицы с именами
   for (let user of names) {
     let th=document.createElement('th');
     let name = document.createTextNode(user);
     let b=document.createElement('b');
-    b.appendChild(name);  th.appendChild(b); tr.appendChild(th); //создание строки в ДОМ
-    console.log(`${user} created`)
-  }  
-  document.getElementById('TableResult').appendChild(tr);
-  console.log('top table created...');
+    b.appendChild(name);  th.appendChild(b); tr.appendChild(th); 
+    game.cols.push({name: user}); //добавление имени в объект game
+  };
 
-  points.length>0? tablePoints() :   console.log(points);
+  document.getElementById('headTableResult').appendChild(tr);//создание строки в ДОМ
+}
 
-  //создание ряда с итоговыми очками игроков
+//функция создания строки с итоговыми очками
+var createTableFooter = function(names) {
+
   let tdt=document.createElement('td');
   let trt=document.createElement('tr');
+  trt.className='totals';
   tdt.className='fc';
   let tot = document.createTextNode('Tt');
   let bt=document.createElement('b');
@@ -118,30 +152,33 @@ var createTable = function () {
 
   for (let user of names) {
     let td0=document.createElement('td');
-    td0.id=user;
+    td0.id=user+'tot';
     let userPoints;
     userPoints = document.createTextNode(0);
     let b0=document.createElement('b');
     b0.appendChild(userPoints);   td0.appendChild(b0);  trt.appendChild(td0); //создание строки в ДОМ
   };
-  document.getElementById('rowTotal').appendChild(trt);
-  console.log('Total created...');
 
-};
+  document.getElementById('footerTableResult').appendChild(trt);
+}
 
+
+//функция добавления в таблицу очков, если игра была загружена из сохраненных
 var tablePoints = function (){
   console.log(`Total created...{$points}`);
 };
 
+// функция загрузки сохраненной игры
 var savedGameLoad =function(){
-  //проверка, еси ли что-то во временных файлах
-if (localStorage.getItem('tempPoints')) {points=localStorage.getItem('tempPoints')};
-console.info(points);
-if (localStorage.getItem('tempRound')) {points=localStorage.getItem('tempRound')};
-console.info(round);
+  //проверка, есlи ли что-то во временных файлах
+  if (localStorage.getItem('tempPoints')) {points=localStorage.getItem('tempPoints')};
+  console.info(points);
+  if (localStorage.getItem('tempRound')) {points=localStorage.getItem('tempRound')};
+  console.info(round);
 
 }
 
+//функция открытия всплывающего окна для добавления очков
 function PopUpShow(window){
   let names = localStorage.getItem('tempNames').split(',');
   let background = document.getElementById('overlay');
@@ -160,6 +197,7 @@ function PopUpShow(window){
         input.name=user;
         input.id=`input${user}`;
         input.placeholder='0';
+        input.required = true;
         div.appendChild(label);
         div.appendChild(input);
         document.getElementById('addingPoints').appendChild(div);
@@ -170,6 +208,7 @@ function PopUpShow(window){
   windowForShow.style.display = 'inline';
 }
 
+
 //Функция скрытия PopUp
 function PopUpHide(window){
   let background = document.getElementById('overlay');
@@ -178,9 +217,13 @@ function PopUpHide(window){
   windowForResult.style.display = 'none';
 }
 
+
+//функция добавления результатов из всплывающего окна в таблицу
 function addResults() {
   let names = localStorage.getItem('tempNames').split(',');
   
+  //счетчик текущего раунда
+
   round++;
   let tr=document.createElement('tr');
   let td=document.createElement('td');
@@ -190,58 +233,79 @@ function addResults() {
   tr.appendChild(td);
   console.log(`round № ${round}...`);
 
-  var roundPoints=[];
+
+  // счетчик для cols в объекте data
+  d = 0;
 
   for (var name of names) {
-    let i = document.getElementById(`input${name}`).value;
-    roundPoints.push(i);
-    console.log(`round points for ${name} is ${i}`);
+    let points = document.getElementById(`input${name}`).value;
+    //проверка ввода пользователя. 
+    //Если ничего не введено, то автоматически добавляется 0. 
+    //Если введено слово, то выдаст ощибки и сбросит ввод.
+    points = checkValuePoints(points,name);
+    console.log(points);
+
+    //добавление в объект game записи очков для каждого пользователя
+    if (game.cols[d].data == undefined) {
+      game.cols[d].data = [];
+      game.cols[d].total = 0;
+    }
+
+    //добавление в объект game очков ДАННОГО РАУНДА  для каждого пользователя
+    game.cols[d].data.push(points);
+    game.cols[d].total = parseInt(game.cols[d].total) + parseInt(points);
+
+    //переписываение строки тотал с новым значением
+    let totString = document.getElementById(`${name}tot`);
+    let oldtot = totString.firstElementChild;
+    let b = document.createElement('b');
+    let tot= document.createTextNode(game.cols[d].total);
+    b.appendChild(tot);    totString.replaceChild(b,oldtot);
+
+    console.log(game);
+
+    //увеличение счетчика
+    d++;
+
+    //добавление строки с очками в ДОМ
     let td=document.createElement('td');
-    let p = document.createTextNode(i);
-    td.appendChild(p);
-    tr.appendChild(td);
-    console.log(`${p} created`);
+    let p = document.createTextNode(points);
+    td.appendChild(p);    tr.appendChild(td);
+
     //сброс значений в полях ввода очков
     document.getElementById(`input${name}`).value ='';
   }
 
-  console.log(`points for round ${roundPoints}`);
-  console.log(`${points} предыдущее значение`);
 
-  points.push(roundPoints);
-  console.log(points);
-  document.getElementById('TableResult').appendChild(tr);
+  document.getElementById('bodyTableResult').appendChild(tr);
+  
   PopUpHide('popupAddResults');
-  localStorage.setItem('tempPoints',points);
+
+
   localStorage.setItem('tempRound',round);
-
-  console.log(`количество элементов в строке ${points[0].length}`);
-  let tot = +0;
-  var totalPoints=[];
-
-  for (let j=0; j <= points.length; j++) {
-    for (let i=0; i <= points[0].length; i++) {
-      console.log(`количество элементов в столбце ${points.length}`);
-      console.log(parseInt(points[i][j]));
-      tot = tot + parseInt(points[i][j]);
-      console.log(tot);
-      totalPoints.push(tot);
-    }
-    };
-  console.log(`количество очков игрока ${name} ${tot}`);
-  totalPoints.push(tot);
-  console.info(`${totalPoints}`);
-  userPoints = document.createTextNode(tot);
-  let totRow =document.getElementById(name);
-  totRow.nodeValue=tot;
+  let gameJSON = JSON.stringify(game);
+  localStorage.setItem('game',gameJSON);
 }
 
+var checkValuePoints = function(points, name) {
+  if ((points == '')|(points == ' ')) {
+    console.log('пользователь не ввел количество очков');
+    return points=0;
+  } else {
+    if (isNaN(points)) {
+      console.log('пользователь ввел недопустимые символы');
+      document.getElementById(`input${name}`).value ='';
+      alert('Please write a number');
+      return points = 0;
+    } else {return points};
+  };
+}
 
+//функция сохранения игры
 function saveGameState() {
   if (!supportsLocalStorage()) { return false; }
   localStorage["nameSavigGame"] = gGameInProgress;
   localStorage["arrUsers"] = gArrUsers;
-  localStorage["arrPoints"] = gArrPoints;
   localStorage["lastRound"] = gLastRound;
   return true;
 }
