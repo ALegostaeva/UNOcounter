@@ -30,19 +30,21 @@
 
         <button id ="addresult" class ="button" onclick="javascript:PopUpShow('popupAddResults')">Add</button>
         
+        <div id="overlay">
         <div id="popupAddResults">
-            <form action="" id="add_results_form" method="post" onsubmit="addResults();return false;">
+            <form action="" id="addResultsForm" method="post" onsubmit="addResults();return false;">
                 <span id="popup_close" onclick="javascript:PopUpHide('popupAddResults')">X</span>
                 <fieldset>
                     <legend>Add points</legend>
+                    
                     <div id="addingPoints">
-
                     </div>
+
                     <input type="button" id ="addToTable" class ="button" onclick="javascript:addResults()" value="Add"/>
                 </fieldset>
             </form>
         </div>
-        <div id="overlay"></div>
+        </div>
     </div>
 
         <div id="footer">

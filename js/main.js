@@ -2,6 +2,9 @@
 
 
 //массивs для игры
+//структура игры game{cols:
+//                  [{name:    , score:[], total:  },
+//                   {name:    , score:[], total:  },...]}
 var arrUsers =  [];
 var round = 0;
 var listGamers = document.getElementById('listGamers');
@@ -16,7 +19,7 @@ var game = {};
 Очищается поле ввода*/
 
 function addGamerToList (){
-  
+
   var gamer = document.getElementById('gamer');
   var name = gamer.value;
 
@@ -30,10 +33,22 @@ function addGamerToList (){
   document.getElementById('gamer').value = '';
   };
 
-localStorage.setItem('tempNames', arrUsers);
+  saveToStorage(arrUsers);
+  console.log(`add to list ${arrUsers}`);
+  sessionStorage.setItem('tempNames', obj);
 };
 
 
+function saveToStorage (...obj){
+  console.log('start savetoStorage');
+  console.log(`то что передалось в функцию сохранения ${obj}`);
+  if (typeof(Storage) !== "undefined") {
+    sessionStorage.setItem('tempNames', obj);
+  } else {
+    console.log(`No Web Storage support`);
+  }
+  
+}
 
 /*функция добавления создания пользователя в формате: <li><b>name</b><span onclick:javascript:deleteGamer>delete</span></li>. 
 Вызывается из addGamerToList.
@@ -60,6 +75,7 @@ function createGamer(name) {
 
   //добавление действия "удалить" на кнопке "х" в списке имен игроков
   span.setAttribute('onclick', 'javascript:deleteGamer(\''+name+'\')');
+  console.log(`after creating ${arrUsers}`);
 }
 
 
@@ -72,26 +88,29 @@ function createGamer(name) {
 function deleteGamer(id) {
   console.log(`delete gamer ${id}`);
   let x = document.getElementById(id);
-  console.log(x);
   x.style.display = 'none';
   x.remove();
   let n = arrUsers.indexOf(id);
   arrUsers.splice(n, 1);
-  console.info(n);
-  console.info(`array of users ${arrUsers}`);
-  console.info('gamer deleted');
+
   if (arrUsers.length === 0) {
     let b=document.getElementById('startNewGame');
     b.style.display= 'none';
-    console.log('buttom startNewGame disabled...');
-  }
+  };
+
+  saveToStorage(arrUsers);
+  console.log(`after delete ${arrUsers}`);
 };
 
+
+/* После нажатия на кнопку "Start new game" в окне создания игроков создается таблица с игроками.
+Из локального хранилища достается архив с именами пользователей.
+*/
 
 var createTable = function () {
 
   console.log('createTable');
-  var names = localStorage.getItem('tempNames').split(',');
+  var names = sessionStorage.getItem('tempNames').split(',');
 
   console.log(game);
 
@@ -103,13 +122,14 @@ var createTable = function () {
   createTableHead(names);
 
   //если игра была загружена из сохраненных, то добавляем очки в таблицу
-  if (game.cols[0].data !== undefined) {
+  if (game.cols[0].score !== undefined) {
     tablePoints();
   };
 
   /*создание ряда с итоговыми очками игроков*/
   createTableFooter(names);
 
+  //localStorage.removeItem("tempNames");
 };
 
 //функция создания шапки таблицы с именами игроков
@@ -165,7 +185,7 @@ var createTableFooter = function(names) {
 
 //функция добавления в таблицу очков, если игра была загружена из сохраненных
 var tablePoints = function (){
-  console.log(`Total created...{$points}`);
+  console.log(`Total created...${points}`);
 };
 
 // функция загрузки сохраненной игры
@@ -180,7 +200,13 @@ var savedGameLoad =function(){
 
 //функция открытия всплывающего окна для добавления очков
 function PopUpShow(window){
-  let names = localStorage.getItem('tempNames').split(',');
+  let names = sessionStorage.getItem('tempNames').split(',');
+  //let names = [];
+
+  /*for (let name of game.cols.name) {
+    console.log(name);
+  };*/
+
   let background = document.getElementById('overlay');
   let windowForShow = document.getElementById(window);
   console.log(names);
@@ -209,7 +235,7 @@ function PopUpShow(window){
 }
 
 
-//Функция скрытия PopUp
+//Функция скрытия PopUp "Add results"
 function PopUpHide(window){
   let background = document.getElementById('overlay');
   let windowForResult = document.getElementById(window);
@@ -220,7 +246,7 @@ function PopUpHide(window){
 
 //функция добавления результатов из всплывающего окна в таблицу
 function addResults() {
-  let names = localStorage.getItem('tempNames').split(',');
+  let names = sessionStorage.getItem('tempNames').split(',');
   
   //счетчик текущего раунда
 
@@ -234,25 +260,25 @@ function addResults() {
   console.log(`round № ${round}...`);
 
 
-  // счетчик для cols в объекте data
+  // счетчик для cols в объекте score
   d = 0;
 
   for (var name of names) {
     let points = document.getElementById(`input${name}`).value;
     //проверка ввода пользователя. 
     //Если ничего не введено, то автоматически добавляется 0. 
-    //Если введено слово, то выдаст ощибки и сбросит ввод.
+    //Если введено слово, то выдаст ошибки и сбросит ввод.
     points = checkValuePoints(points,name);
     console.log(points);
 
     //добавление в объект game записи очков для каждого пользователя
-    if (game.cols[d].data == undefined) {
-      game.cols[d].data = [];
+    if (game.cols[d].score == undefined) {
+      game.cols[d].score = [];
       game.cols[d].total = 0;
     }
 
     //добавление в объект game очков ДАННОГО РАУНДА  для каждого пользователя
-    game.cols[d].data.push(points);
+    game.cols[d].score.push(points);
     game.cols[d].total = parseInt(game.cols[d].total) + parseInt(points);
 
     //переписываение строки тотал с новым значением
@@ -295,7 +321,7 @@ var checkValuePoints = function(points, name) {
     if (isNaN(points)) {
       console.log('пользователь ввел недопустимые символы');
       document.getElementById(`input${name}`).value ='';
-      alert('Please write a number');
+      alert('Please write a numbers of points');
       return points = 0;
     } else {return points};
   };
