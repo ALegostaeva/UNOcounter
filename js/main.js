@@ -11,6 +11,12 @@ var listGamers = document.getElementById('listGamers');
 var maxPoints = 0;
 var game = {};
 
+/* vargame = {
+  name ="";
+  score="";
+  total="";
+function(name):
+  self.name=name} */
 
 /*функция добавления пользователя в div listGamers.
 1. Проверка, указал ли пользователь какое-либо значение в поле ввода.
